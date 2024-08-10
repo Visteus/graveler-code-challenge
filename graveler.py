@@ -5,20 +5,16 @@ from multiprocessing import Process, Pool, TimeoutError
 
 runs = 1000000000
 
-def simulate1(ignored):
-    roll_counts = [0,0,0,0]
-    for i in repeat(None, 231):
-        roll = random.randrange(0,3) # equivalent to 4-sided die
-        roll_counts[roll] += 1
-    return roll_counts[0]
+def simulate_turns(ignored):
+    return [random.randrange(0,3) for _ in range(0,231)].count(0)
 
 if __name__ == '__main__':
-    start_time = time.time()
-    with Pool(processes=10) as pool:    # Max processes somewhat dependent on your machine/hardware.
+    with Pool(processes=60) as pool:    # Max processes somewhat dependent on your machine/hardware.
         try:
-            results1 = pool.map(simulate1, range(1,runs))
+            start_time = time.time()
+            results2 = pool.map(simulate_turns, range(runs))
             run_time = time.time() - start_time
-            print(f"Maximum in '{runs}' runs with 'simulate1': {max(results1)}")
+            print(f"Maximum in '{runs}' runs: {max(results2)}")
             print(f"\tIn only {run_time} seconds")
         except TimeoutError:
             print("TimeoutError")
